@@ -72,6 +72,15 @@ installExtensionFromTgz()
 }
 
 
+if [[ -z "${EXTENSIONS##*,swoole,*}" ]]; then
+    echo "---------- Install swoole ----------"
+    apk add --no-cache libstdc++
+    isPhpVersionGreaterOrEqual 8 0
+    if [[ "$?" = "1" ]]; then
+        installExtensionFromTgz swoole-5.1.3 --enable-openssl --enable-http2
+    fi
+fi
+
 if [[ -z "${EXTENSIONS##*,pdo_mysql,*}" ]]; then
     echo "---------- Install pdo_mysql ----------"
     docker-php-ext-install ${MC} pdo_mysql
@@ -349,8 +358,8 @@ if [[ -z "${EXTENSIONS##*,imagick,*}" ]]; then
     apk add --no-cache file-dev
     apk add --no-cache imagemagick imagemagick-dev
 #    cd imagick-3.7.0 && phpize && ./configure
-#    make 
-#    make install 
+#    make
+#    make install
     installExtensionFromTgz imagick-3.7.0
 fi
 
@@ -600,6 +609,7 @@ if [[ -z "${EXTENSIONS##*,swoole,*}" ]]; then
         installExtensionFromTgz swoole-5.1.3 --enable-openssl --enable-http2
     fi
 fi
+exit
 
 if [[ -z "${EXTENSIONS##*,zip,*}" ]]; then
     echo "---------- Install zip ----------"
@@ -695,7 +705,7 @@ if [[ -z "${EXTENSIONS##*,sdebug,*}" ]]; then
 fi
 
 if [ "${PHP_EXTENSIONS}" != "" ]; then
-#    PHP-Imagick 扩展中有所需的其他依赖项,不进行删除.build-deps 
+#    PHP-Imagick 扩展中有所需的其他依赖项,不进行删除.build-deps
 #    apk del .build-deps \
      docker-php-source delete
 fi
